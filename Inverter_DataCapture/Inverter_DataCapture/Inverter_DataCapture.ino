@@ -24,16 +24,18 @@
 // !!! Confirm the address
 #define INVERTER_ADDRESS 2
 
+// 定义流控引脚 
+#define RS485_CONTROL_PIN 21  
+
 // 用于RS485通信的Serial2引脚 (Heltec Wireless Stick Lite V3)
-#define RS485_RX_PIN 18
+#define RS485_RX_PIN 16
 #define RS485_TX_PIN 17
 
-// 当使用自动流控RS485模块时，此引脚不实际使用，仅作占位符
-#define UNUSED_FLOW_CONTROL_PIN 4       
+// 初始化
+// 传入 RS485_CONTROL_PIN，库文件会自动操作这个引脚进行流控
+Aurora inverter(INVERTER_ADDRESS, &Serial2, RS485_CONTROL_PIN);      
 
-// 初始化Aurora逆变器通信对象
-// 使用Serial2进行RS485通信
-Aurora inverter(INVERTER_ADDRESS, &Serial2, UNUSED_FLOW_CONTROL_PIN);
+
 
 // =================================================================
 //  程序主函数
@@ -46,7 +48,7 @@ void setup() {
     // 等待串口连接
     delay(2000); 
 
-    Serial.println("\n--- Aurora Inverter Simple Reader Test (Final Version) ---");
+    Serial.println("\n--- Aurora Inverter Reader (Heltec V3 + MAX14783) ---");
     Serial.println("Initializing...");
 
     // 启动用于RS485通信的硬件串口2
