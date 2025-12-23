@@ -5,14 +5,14 @@
 //  Configuration for Aurora Inverter (RS485)
 // =================================================================
 #define INVERTER_ADDRESS 2
-#define UNUSED_PIN 4       
+#define UNUSED_PIN 4       // Flow control pins, not used due to auto flow control module
 
 // Initialize the Aurora inverter communication object.
 // Use Serial2 (GPIO 17-TX, 18-RX) for RS485 communication.
 Aurora inverter(INVERTER_ADDRESS, &Serial2, UNUSED_PIN);
 
 // =================================================================
-//  LoRaWAN Configuration (Your keys and settings)
+//  LoRaWAN Configuration
 // =================================================================
 
 /* OTAA parameters */
@@ -30,17 +30,15 @@ uint16_t userChannelsMask[6] = { 0x00FF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 
 LoRaMacRegion_t loraWanRegion = LORAMAC_REGION_AS923;
 DeviceClass_t loraWanClass = CLASS_A;
 
-/* Set transmission interval to 30 seconds for testing */
+/* LoRaWAN transmission interval (ms) */
 uint32_t appTxDutyCycle = 30000;
 
-/* 修改1: 启用OTAA激活方式 */
-bool overTheAirActivation = true; // 启用OTAA激活方式以适应实地测试
-/* 修改2: 启用ADR */
-bool loraWanAdr = true; // 启用ADR以适应网络条件变化
-bool isTxConfirmed = false; // Use unconfirmed for regular telemetry
+bool overTheAirActivation = true; // True = OTAA, False = ABP
+bool loraWanAdr = true; 
+bool isTxConfirmed = false; 
 uint8_t confirmedNbTrials = 8;
 
-// Define the single FPort we will use for all data
+// Define the single FPort
 #define UNIFIED_DATA_FPORT 10
 
 // =================================================================
@@ -228,8 +226,8 @@ void loop() {
             LoRaWAN.generateDeveuiByChipID();
             #endif
             LoRaWAN.init(loraWanClass, loraWanRegion);
-            // 修改3: 删除固定数据速率设置
-            // LoRaWAN.setDefaultDR(5); // 移除固定数据速率设置，启用ADR后将自动调整
+            // Remove fixed data rate setting, ADR will automatically adjust data rate
+            // LoRaWAN.setDefaultDR(5); 
             break;
         }
         case DEVICE_STATE_JOIN: {
